@@ -28,9 +28,14 @@ SELECT apikey, salt, password
 	WHERE username = ?;
 
 -- GetTotalBalance
-SELECT balance - SUM(amount), fake - SUM(amount)
-	FROM (
-		SELECT SUM(balance) AS balance, SUM(balance + fake_balance) AS fake
-			FROM players),
-		in_transactions
+SELECT SUM(balance), SUM(balance + fake_balance)
+	FROM players;
+
+-- GetNotedTransactions
+SELECT note, amount
+	FROM in_transactions
 	WHERE note NOT NULL;
+
+-- GetPlayers
+SELECT username, balance, fake_balance, item_count
+	FROM players;

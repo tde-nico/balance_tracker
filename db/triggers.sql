@@ -8,12 +8,19 @@ BEGIN
   UPDATE players
     SET balance = balance + NEW.amount
     WHERE NEW.is_arrived = 1
-      AND username = NEW."to";
+      AND username = NEW."to"
+      AND NEW.note IS NULL;
 
   UPDATE players
     SET fake_balance = fake_balance + NEW.amount
     WHERE NEW.is_arrived = 0
-      AND username = NEW."to";
+      AND username = NEW."to"
+      AND NEW.note IS NULL;
+
+  UPDATE players
+    SET item_count = item_count + 1
+    WHERE username = NEW."to"
+      AND NEW.note IS NOT NULL;
 END;
 
 CREATE TRIGGER update_balance_on_out_transaction

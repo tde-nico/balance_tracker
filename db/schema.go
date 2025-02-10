@@ -10,6 +10,7 @@ type Player struct {
 	Username    string
 	Balance     float32
 	FakeBalance float32
+	ItemCount   int
 }
 
 type Transaction struct {

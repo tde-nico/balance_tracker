@@ -8,8 +8,9 @@ import (
 
 type TotalBalanceData struct {
 	Data
-	Balance     float32
-	FakeBalance float32
+	Balance           float32
+	FakeBalance       float32
+	NotedTransactions []db.NotedTransaction
 }
 
 func home(ctx *middleware.Ctx) {
@@ -30,11 +31,17 @@ func home(ctx *middleware.Ctx) {
 		return
 	}
 
-	// TODO: Add noted items to the balance
+	transactions, err := db.GetNotedTransactions()
+	if err != nil {
+		ctx.InternalError(err)
+		return
+	}
+
 	data := &TotalBalanceData{
-		Data:        Data{User: ctx.User},
-		Balance:     balance,
-		FakeBalance: fakeBalance,
+		Data:              Data{User: ctx.User},
+		Balance:           balance,
+		FakeBalance:       fakeBalance,
+		NotedTransactions: transactions,
 	}
 	executeTemplate(ctx, tmpl, data)
 }

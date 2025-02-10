@@ -17,6 +17,7 @@ func StartRouting(key []byte) {
 
 	middleware.AuthHandleFunc("GET /", home)
 	middleware.AuthHandleFunc("GET /logout", logout)
+	middleware.AuthHandleFunc("GET /users", users)
 	// middleware.AuthHandleFunc("GET /user/{username}", userInfo)
 
 	log.Notice("Serving on :8000")

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS "players" (
 	"username" VARCHAR(32) NOT NULL,
 	"balance" REAL NOT NULL DEFAULT 0,
 	"fake_balance" REAL NOT NULL DEFAULT 0,
+	"item_count" INTEGER NOT NULL DEFAULT 0,
 	PRIMARY KEY("username")
 );
 
