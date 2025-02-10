@@ -1,0 +1,105 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balance Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+
+<style>
+  [x-cloak] { display: none !important; }
+</style>
+
+<body class="bg-zinc-800">
+
+  <nav class="text-zinc-100" x-data="{open: false}">
+    <div class="bg-zinc-900 flex items-center justify-between p-4">
+      <a href="/"><h1 class="text-xl font-bold">Balance Tracker</h1></a>
+
+      {{ if .User }}
+        <div class="flex items-center space-x-6">
+          <ul class="hidden md:flex space-x-6">
+            <li><a href="#1" class="font-bold hover:text-zinc-400">In</a></li>
+            <li><a href="#2" class="font-bold hover:text-zinc-400">Out</a></li>
+            <li><a href="#3" class="font-bold hover:text-zinc-400">Users</a></li>
+          </ul>
+
+          <button @click="open = !open" class="text-2xl">
+            ☰
+          </button>
+
+          <div 
+            x-cloak
+            x-show="open"
+            x-transition
+            class="absolute right-2 top-14 w-36 bg-zinc-950 p-2 rounded-lg shadow-lg border border-zinc-700 hidden md:block"
+          >
+            <a href="/logout" class="block px-4 py-2 text-white hover:bg-zinc-800 rounded-md">
+              Logout
+            </a>
+          </div>
+
+        </div>
+      {{ end }}
+    </div>
+
+    {{ if .User }}
+      <aside
+        x-cloak
+        x-show="open"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="translate-x-full"
+        x-transition:enter-end="translate-x-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="translate-x-full"
+        class="md:hidden fixed top-0 right-0 w-1/2 h-full bg-zinc-950 flex flex-col justify-between"
+      >
+        <div class="p-4">
+          <button @click="open = false" class="text-zinc-400 hover:text-zinc-100 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon" class="w-8 h-8 hover:text-zinc-500 dark:hover:text-zinc-300">
+              <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"></path>
+            </svg>
+          </button>
+          <nav class="mt-1 justify-between">
+            <ul
+              x-show="open"
+              x-trasition
+              class=""
+            >
+              <li><a href="#1" class="block p-4 hover:bg-zinc-800 border-b border-t border-zinc-800">In</a></li>
+              <li><a href="#2" class="block p-4 hover:bg-zinc-800 border-b border-zinc-800">Out</a></li>
+              <li><a href="#3" class="block p-4 hover:bg-zinc-800 border-b border-zinc-800">Users</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="p-4">
+          <a href="/logout" class="block p-4 hover:bg-zinc-800 border-b border-t border-zinc-800">Logout</a>
+        </div>
+      </aside>
+    {{ end }}
+  </nav>
+
+  {{ with .Flashes }}
+    {{ range . }}
+      <div x-data="{ show: true }" x-show="show" class="bg-{{ .Type }}-500 text-white p-4 rounded-md flex items-center justify-between mb-4">
+      <strong>{{ .Message }}</strong>
+      <button type="button" aria-label="Close" class="ml-4" @click="show = false">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon" class="w-6 h-6">
+        <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"></path>
+        </svg>
+      </button>
+      </div>
+    {{ end }}
+  {{ end }}
+
+  <div>
+    {{ template "content" . }}
+  </div>
+</body>
+</html>
+{{ end }}
