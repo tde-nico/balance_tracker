@@ -41,3 +41,21 @@ func AuthHandleFunc(pattern string, handler func(ctx *Ctx)) {
 		handler(ctx)
 	})
 }
+
+func EditorHandleFunc(pattern string, handler func(ctx *Ctx)) {
+	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
+		ctx, err := InitCtx(w, r)
+		if err != nil {
+			log.Errorf("Error initializing context: %v", err)
+			return
+		}
+
+		if ctx.User == nil || !ctx.User.IsEditor {
+			ctx.AddFlash("You must be Editor in to access that page")
+			ctx.Redirect("/login", http.StatusSeeOther)
+			return
+		}
+
+		handler(ctx)
+	})
+}

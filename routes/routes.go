@@ -19,6 +19,11 @@ func StartRouting(key []byte) {
 	middleware.AuthHandleFunc("GET /logout", logout)
 	middleware.AuthHandleFunc("GET /users", users)
 	middleware.AuthHandleFunc("GET /user/{username}", userInfo)
+	middleware.AuthHandleFunc("GET /in", inTransactionsGet)
+	middleware.AuthHandleFunc("GET /in/{id}", inTransactionGet)
+	middleware.AuthHandleFunc("GET /out", outTransactionsGet)
+
+	middleware.EditorHandleFunc("PUT /in/{id}", inTransactionPut)
 
 	log.Notice("Serving on :8000")
 	if err := http.ListenAndServe("0.0.0.0:8000", nil); err != nil {

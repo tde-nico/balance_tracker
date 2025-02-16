@@ -18,17 +18,17 @@
 
   <nav class="text-zinc-100" x-data="{open: false}">
     <div class="bg-zinc-900 flex items-center justify-between p-4">
-      <a href="/"><h1 class="text-xl font-bold">Balance Tracker</h1></a>
+      <a href="/"><h1 class="text-xl font-bold hover:text-zinc-400">Balance Tracker</h1></a>
 
       {{ if .User }}
         <div class="flex items-center space-x-6">
           <ul class="hidden md:flex space-x-6">
-            <li><a href="#1" class="font-bold hover:text-zinc-400">In</a></li>
-            <li><a href="#2" class="font-bold hover:text-zinc-400">Out</a></li>
+            <li><a href="/in" class="font-bold hover:text-zinc-400">In</a></li>
+            <li><a href="/out" class="font-bold hover:text-zinc-400">Out</a></li>
             <li><a href="/users" class="font-bold hover:text-zinc-400">Users</a></li>
           </ul>
 
-          <button @click="open = !open" class="text-2xl">
+          <button @click="open = !open" class="text-2xl hover:text-zinc-400">
             ☰
           </button>
 
@@ -71,8 +71,8 @@
               x-trasition
               class=""
             >
-              <li><a href="#1" class="block p-4 hover:bg-zinc-800 border-b border-t border-zinc-800">In</a></li>
-              <li><a href="#2" class="block p-4 hover:bg-zinc-800 border-b border-zinc-800">Out</a></li>
+              <li><a href="/in" class="block p-4 hover:bg-zinc-800 border-b border-t border-zinc-800">In</a></li>
+              <li><a href="/out" class="block p-4 hover:bg-zinc-800 border-b border-zinc-800">Out</a></li>
               <li><a href="/users" class="block p-4 hover:bg-zinc-800 border-b border-zinc-800">Users</a></li>
             </ul>
           </nav>

@@ -46,12 +46,37 @@ SELECT username, balance, fake_balance, item_count
 	WHERE username = ?;
 
 -- GetInTransactions
-SELECT "from", "to", amount, is_arrived, note
+SELECT id, "from", "to", amount, is_arrived, note
 	FROM in_transactions
 	WHERE "to" = ?;
 
+-- GetAllInTransactions
+SELECT id, "from", "to", amount, is_arrived, note
+	FROM in_transactions;
+
+-- GetInTransaction
+SELECT id, "from", "to", amount, is_arrived, note
+	FROM in_transactions
+	WHERE id = ?;
+
+-- InsertInTransaction
+INSERT INTO in_transactions ("from", "to", amount, is_arrived, note)
+	VALUES (?, ?, ?, ?, ?);
+
+-- InsertInTransactionWithID
+INSERT INTO in_transactions (id, "from", "to", amount, is_arrived, note)
+	VALUES (?, ?, ?, ?, ?, ?);
+
+-- DeleteInTransaction
+DELETE FROM in_transactions
+	WHERE id = ?;
+
 -- GetOutTransactions
-SELECT "from", "to", purpose, amount, is_arrived, note
+SELECT id, "from", "to", purpose, amount, is_arrived, note
 	FROM out_transactions
 	WHERE "from" = ?
 		OR "to" = ?;
+
+-- GetAllOutTransactions
+SELECT id, "from", "to", purpose, amount, is_arrived, note
+	FROM out_transactions;

@@ -1,0 +1,45 @@
+{{ define "content" }}
+<div class="flex items-center justify-center min-h-[80vh] bg-zinc-800 text-zinc-300">
+  <div class="max-w-5xl p-6 w-full">
+    <h1 class="text-3xl font-bold text-center mb-6">Out Transactions</h1>
+    
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse border border-zinc-700 rounded-lg">
+        <thead>
+          <tr class="bg-zinc-950 text-left text-gray-300">
+            <th class="p-4 border-b border-zinc-700">From</th>
+            <th class="p-4 border-b border-zinc-700">To</th>
+            <th class="p-4 border-b border-zinc-700">Purpose</th>
+            <th class="p-4 border-b border-zinc-700 text-right">Amount</th>
+            <th class="p-4 border-b border-zinc-700 text-right">Status</th>
+            <th class="p-4 border-b border-zinc-700">Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ range .OutTransactions }}
+            <tr class="bg-zinc-900 hover:bg-zinc-700 transition-colors">
+              <td class="p-4 border-b border-zinc-700">
+                <a href="/user/{{ .From }}" class="font-bold text-blue-400 hover:text-blue-600">{{ .From }}</a>
+              </td>
+              <td class="p-4 border-b border-zinc-700">
+                <a href="/user/{{ .To }}" class="font-bold text-blue-400 hover:text-blue-600">{{ .To }}</a>
+              </td>
+              <td class="p-4 border-b border-zinc-700 text-white">
+                {{ .Purpose }}
+              </td>
+              <td class="p-4 border-b border-zinc-700 text-right {{ if gt .Amount 0.0 }} text-green-500 {{ else if lt .Amount 0.0 }} text-red-500 {{ end }}">{{ .Amount }}</td>
+              <td class="p-4 border-b border-zinc-700 text-right">
+                <span class="px-2 py-1 text-sm rounded-lg whitespace-nowrap {{ if .IsArrived }} bg-green-500 {{ else }} bg-red-500 {{ end }}">
+                  {{ if .IsArrived }}✔ Arrived{{ else }}⏳ Pending{{ end }}
+                </span>
+              </td>
+              <td class="p-4 border-b border-zinc-700">{{ .Note }}</td>
+            </tr>
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{{ end }}

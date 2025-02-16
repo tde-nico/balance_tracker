@@ -1,0 +1,17 @@
+
+services:
+  platform:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 5085:8000
+    volumes:
+      - ./database.db:/srv/database.db
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.201.69.0/24
+          gateway: 10.201.69.1

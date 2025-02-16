@@ -77,9 +77,9 @@ func LoadSecretKey() []byte {
 	secretHex, ok := os.LookupEnv("SECRET_KEY")
 	if !ok {
 		log.Info("SECRET_KEY not found in environment, using database")
-		secretHex, err = db.GetKey("secret-key")
+		secretHex, err = db.GetKey("SECRET_KEY")
 		if err != nil {
-			log.Fatal("SECRET_KEY not found: %v", err)
+			log.Fatalf("SECRET_KEY not found: %v", err)
 		}
 	}
 
@@ -90,7 +90,7 @@ func LoadSecretKey() []byte {
 	secret := make([]byte, 32)
 	n, err := hex.Decode(secret, []byte(secretHex))
 	if err != nil {
-		log.Fatal("Error decoding SECRET_KEY: %v", err)
+		log.Fatalf("Error decoding SECRET_KEY: %v", err)
 	}
 	if n != 32 {
 		log.Fatal("Error decoding SECRET_KEY")
