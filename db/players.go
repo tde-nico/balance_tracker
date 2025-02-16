@@ -25,3 +25,17 @@ func GetPlayers() ([]Player, error) {
 	}
 	return players, nil
 }
+
+func GetPlayer(username string) (*Player, error) {
+	query, err := GetStatement("GetPlayer")
+	if err != nil {
+		return nil, fmt.Errorf("error getting statement: %v", err)
+	}
+
+	var p Player
+	err = query.QueryRow(username).Scan(&p.Username, &p.Balance, &p.FakeBalance, &p.ItemCount)
+	if err != nil {
+		return nil, fmt.Errorf("error scanning player: %v", err)
+	}
+	return &p, nil
+}

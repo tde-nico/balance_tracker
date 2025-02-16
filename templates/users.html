@@ -15,7 +15,7 @@
         <tbody>
           {{ range .Users }}
           <tr
-            x-data="{ url: '/users/{{ .Username }}' }"
+            x-data="{ url: '/user/{{ .Username }}' }"
             @click="window.location = url"
             class="bg-zinc-900 hover:bg-zinc-700 transition-colors"
           >

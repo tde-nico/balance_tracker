@@ -18,10 +18,10 @@ func StartRouting(key []byte) {
 	middleware.AuthHandleFunc("GET /", home)
 	middleware.AuthHandleFunc("GET /logout", logout)
 	middleware.AuthHandleFunc("GET /users", users)
-	// middleware.AuthHandleFunc("GET /user/{username}", userInfo)
+	middleware.AuthHandleFunc("GET /user/{username}", userInfo)
 
 	log.Notice("Serving on :8000")
-	if err := http.ListenAndServe(":8000", nil); err != nil {
+	if err := http.ListenAndServe("0.0.0.0:8000", nil); err != nil {
 		log.Fatalf("Error Serving: %v", err)
 	}
 }

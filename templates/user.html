@@ -1,0 +1,89 @@
+{{ define "content" }}
+<div class="flex flex-col items-center justify-center min-h-[80vh] bg-zinc-800 text-zinc-300 p-6">
+  
+  <h1 class="text-3xl font-bold text-center mb-6">{{ .Player.Username }}'s Transactions</h1>
+  <h2 class="text-2xl font-bold text-center text-zinc-400">Balance: {{ .Player.Balance }}</h2>
+  <h2 class="text-2xl font-bold text-center text-zinc-400">Pending Balance: {{ .Player.FakeBalance }}</h2>
+  <h2 class="text-2xl font-bold text-center text-zinc-400">Items: {{ .Player.ItemCount }}</h2>
+
+  <div class="max-w-4xl w-full">
+    
+    <!-- Outgoing Transactions -->
+    {{ if .OutTransactions }}
+      <h2 class="text-xl font-semibold mb-3 text-red-400">Outgoing Transactions</h2>
+      <div class="overflow-x-auto mb-6">
+        <table class="border-collapse border border-zinc-700 w-full rounded-lg">
+          <thead>
+            <tr class="bg-zinc-950 text-left text-gray-300">
+              <th class="p-4 border-b border-zinc-700">From</th>
+              <th class="p-4 border-b border-zinc-700">To</th>
+              <th class="p-4 border-b border-zinc-700 text-right">Amount</th>
+              <th class="p-4 border-b border-zinc-700">Purpose</th>
+              <th class="p-4 border-b border-zinc-700 text-right">Status</th>
+              <th class="p-4 border-b border-zinc-700">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ range .OutTransactions }}
+            <tr class="bg-zinc-900 hover:bg-zinc-700 transition-colors">
+              <td class="p-4 border-b border-zinc-700 text-white">
+                <a href="/user/{{ .From }}" class="font-bold text-blue-400 hover:text-blue-600">{{ .From }}</a>
+              </td>
+              <td class="p-4 border-b border-zinc-700 text-white">
+                <a href="/user/{{ .To }}" class="font-bold text-blue-400 hover:text-blue-600">{{ .To }}</a>
+              </td>
+              <td class="p-4 border-b border-zinc-700 text-right text-{{ if gt .Amount 0.0 }}green{{ else }}red{{ end }}-500">
+                {{ .Amount }}
+              </td>
+              <td class="p-4 border-b border-zinc-700">{{ .Purpose }}</td>
+              <td class="p-4 border-b border-zinc-700 text-right">
+                <span class="px-2 py-1 text-sm rounded-lg whitespace-nowrap {{ if .IsArrived }}bg-green-500 text-black{{ else }}bg-red-500{{ end }}">
+                  {{ if .IsArrived }}✔ Arrived{{ else }}⏳ Pending{{ end }}
+                </span>
+              </td>
+              <td class="p-4 border-b border-zinc-700">{{ .Note }}</td>
+            </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </div>
+    {{ end }}
+
+    <!-- Incoming Transactions -->
+    {{ if .InTransactions }}
+      <h2 class="text-xl font-semibold mb-3 text-green-400">Incoming Transactions</h2>
+      <div class="overflow-x-auto">
+        <table class="border-collapse border border-zinc-700 w-full rounded-lg">
+          <thead>
+            <tr class="bg-zinc-950 text-left text-gray-300">
+              <th class="p-4 border-b border-zinc-700">From</th>
+              <th class="p-4 border-b border-zinc-700 text-right">Amount</th>
+              <th class="p-4 border-b border-zinc-700 text-right">Status</th>
+              <th class="p-4 border-b border-zinc-700">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ range .InTransactions }}
+            <tr class="bg-zinc-900 hover:bg-zinc-700 transition-colors">
+              <td class="p-4 border-b border-zinc-700 text-white">
+                {{ .From }}
+              </td>
+              <td class="p-4 border-b border-zinc-700 text-right text-{{ if gt .Amount 0.0 }}green{{ else }}red{{ end }}-500">
+                {{ .Amount }}
+              </td>
+              <td class="p-4 border-b border-zinc-700 text-right">
+                <span class="px-2 py-1 text-sm rounded-lg whitespace-nowrap {{ if .IsArrived }}bg-green-500 text-black{{ else }}bg-red-500{{ end }}">
+                  {{ if .IsArrived }}✔ Arrived{{ else }}⏳ Pending{{ end }}
+                </span>
+              </td>
+              <td class="p-4 border-b border-zinc-700">{{ .Note }}</td>
+            </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </div>
+    {{ end }}
+
+  </div>
+</div>
+{{ end }}
