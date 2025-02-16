@@ -193,3 +193,80 @@ func GetAllOutTransactions() ([]Transaction, error) {
 	}
 	return transactions, nil
 }
+
+func GetOutTransaction(id string) (Transaction, error) {
+	query, err := GetStatement("GetOutTransaction")
+	if err != nil {
+		return Transaction{}, fmt.Errorf("error getting statement: %v", err)
+	}
+
+	var t Transaction
+	var note sql.NullString
+	err = query.QueryRow(id).Scan(&t.ID, &t.From, &t.To, &t.Purpose, &t.Amount, &t.IsArrived, &note)
+	if err != nil {
+		return Transaction{}, fmt.Errorf("error scanning transaction: %v", err)
+	}
+	if note.Valid {
+		t.Note = note.String
+	}
+	return t, nil
+}
+
+func InsertOutTransaction(t Transaction) error {
+	query, err := GetStatement("InsertOutTransaction")
+	if err != nil {
+		return fmt.Errorf("error getting statement: %v", err)
+	}
+
+	_, err = query.Exec(t.From, t.To, t.Purpose, t.Amount, t.IsArrived, t.Note)
+	if err != nil {
+		return fmt.Errorf("error inserting transaction: %v", err)
+	}
+	return nil
+}
+
+func InsertOutTransactionWithID(t Transaction) error {
+	query, err := GetStatement("InsertOutTransactionWithID")
+	if err != nil {
+		return fmt.Errorf("error getting statement: %v", err)
+	}
+
+	var note sql.NullString
+	if t.Note == "" {
+		note = sql.NullString{Valid: false}
+	} else {
+		note = sql.NullString{String: t.Note, Valid: true}
+	}
+
+	_, err = query.Exec(t.ID, t.From, t.To, t.Purpose, t.Amount, t.IsArrived, note)
+	if err != nil {
+		return fmt.Errorf("error inserting transaction: %v", err)
+	}
+	return nil
+}
+
+func DeleteOutTransaction(id int) error {
+	query, err := GetStatement("DeleteOutTransaction")
+	if err != nil {
+		return fmt.Errorf("error getting statement: %v", err)
+	}
+
+	_, err = query.Exec(id)
+	if err != nil {
+		return fmt.Errorf("error deleting transaction: %v", err)
+	}
+	return nil
+}
+
+func UpdateOutTransaction(t Transaction) error {
+	err := DeleteOutTransaction(t.ID)
+	if err != nil {
+		return fmt.Errorf("error updating transaction: %v", err)
+	}
+
+	err = InsertOutTransactionWithID(t)
+	if err != nil {
+		return fmt.Errorf("error updating transaction: %v", err)
+	}
+	return nil
+}

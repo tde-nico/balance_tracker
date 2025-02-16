@@ -86,7 +86,7 @@ func inTransactionPut(ctx *middleware.Ctx) {
 		Note:      ctx.FormValue("note"),
 	}
 
-	log.Noticef("Updating Transaction: %+v", t)
+	log.Noticef("Updating In Transaction: %+v", t)
 
 	err = db.UpdateInTransaction(t)
 	if err != nil {

@@ -38,7 +38,8 @@ SELECT note, amount
 
 -- GetPlayers
 SELECT username, balance, fake_balance, item_count
-	FROM players;
+	FROM players
+	ORDER BY username;
 
 -- GetPlayer
 SELECT username, balance, fake_balance, item_count
@@ -80,3 +81,20 @@ SELECT id, "from", "to", purpose, amount, is_arrived, note
 -- GetAllOutTransactions
 SELECT id, "from", "to", purpose, amount, is_arrived, note
 	FROM out_transactions;
+
+-- GetOutTransaction
+SELECT id, "from", "to", purpose, amount, is_arrived, note
+	FROM out_transactions
+	WHERE id = ?;
+
+-- InsertOutTransaction
+INSERT INTO out_transactions ("from", "to", purpose, amount, is_arrived, note)
+	VALUES (?, ?, ?, ?, ?, ?);
+
+-- InsertOutTransactionWithID
+INSERT INTO out_transactions (id, "from", "to", purpose, amount, is_arrived, note)
+	VALUES (?, ?, ?, ?, ?, ?, ?);
+
+-- DeleteOutTransaction
+DELETE FROM out_transactions
+	WHERE id = ?;
