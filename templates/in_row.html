@@ -1,0 +1,21 @@
+{{ define "row" }}
+<tr
+  x-data="{ url: '/in/{{ .ID }}' }"
+  @click="window.location = url"
+  class="bg-zinc-900 hover:bg-zinc-700 transition-colors"
+>
+  <td class="p-4 border-b border-zinc-700 text-white">
+    <a class="font-bold text-blue-400">{{ .From }}</a>
+  </td>
+  <td class="p-4 border-b border-zinc-700 text-white">
+    <a href="/user/{{ .To }}" class="font-bold text-blue-400 hover:text-blue-600">{{ .To }}</a>
+  </td>
+  <td class="p-4 border-b border-zinc-700 text-right {{ if gt .Amount 0.0 }} text-green-500 {{ else if lt .Amount 0.0 }} text-red-500 {{ end }}">{{ .Amount }}</td>
+  <td class="p-4 border-b border-zinc-700 text-right">
+    <span class="px-2 py-1 text-sm rounded-lg whitespace-nowrap {{ if .IsArrived }} bg-green-500 {{ else }} bg-red-500 {{ end }}">
+      {{ if .IsArrived }}✔ Arrived{{ else }}⏳ Pending{{ end }}
+    </span>
+  </td>
+  <td class="p-4 border-b border-zinc-700">{{ .Note }}</td>
+</tr>
+{{ end }}

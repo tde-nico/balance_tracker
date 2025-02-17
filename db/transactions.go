@@ -79,16 +79,30 @@ func GetInTransaction(id string) (Transaction, error) {
 	return t, nil
 }
 
-func InsertInTransaction(t Transaction) error {
+func InsertInTransaction(t *Transaction) error {
 	query, err := GetStatement("InsertInTransaction")
 	if err != nil {
 		return fmt.Errorf("error getting statement: %v", err)
 	}
 
-	_, err = query.Exec(t.From, t.To, t.Amount, t.IsArrived, t.Note)
+	var note sql.NullString
+	if t.Note == "" {
+		note = sql.NullString{Valid: false}
+	} else {
+		note = sql.NullString{String: t.Note, Valid: true}
+	}
+
+	res, err := query.Exec(t.From, t.To, t.Amount, t.IsArrived, note)
 	if err != nil {
 		return fmt.Errorf("error inserting transaction: %v", err)
 	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return fmt.Errorf("error getting last insert id: %v", err)
+	}
+	t.ID = int(id)
+
 	return nil
 }
 
@@ -212,16 +226,30 @@ func GetOutTransaction(id string) (Transaction, error) {
 	return t, nil
 }
 
-func InsertOutTransaction(t Transaction) error {
+func InsertOutTransaction(t *Transaction) error {
 	query, err := GetStatement("InsertOutTransaction")
 	if err != nil {
 		return fmt.Errorf("error getting statement: %v", err)
 	}
 
-	_, err = query.Exec(t.From, t.To, t.Purpose, t.Amount, t.IsArrived, t.Note)
+	var note sql.NullString
+	if t.Note == "" {
+		note = sql.NullString{Valid: false}
+	} else {
+		note = sql.NullString{String: t.Note, Valid: true}
+	}
+
+	res, err := query.Exec(t.From, t.To, t.Purpose, t.Amount, t.IsArrived, note)
 	if err != nil {
 		return fmt.Errorf("error inserting transaction: %v", err)
 	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return fmt.Errorf("error getting last insert id: %v", err)
+	}
+	t.ID = int(id)
+
 	return nil
 }
 

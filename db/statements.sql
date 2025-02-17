@@ -49,11 +49,13 @@ SELECT username, balance, fake_balance, item_count
 -- GetInTransactions
 SELECT id, "from", "to", amount, is_arrived, note
 	FROM in_transactions
-	WHERE "to" = ?;
+	WHERE "to" = ?
+	ORDER BY id DESC;
 
 -- GetAllInTransactions
 SELECT id, "from", "to", amount, is_arrived, note
-	FROM in_transactions;
+	FROM in_transactions
+	ORDER BY id DESC;
 
 -- GetInTransaction
 SELECT id, "from", "to", amount, is_arrived, note
@@ -76,11 +78,13 @@ DELETE FROM in_transactions
 SELECT id, "from", "to", purpose, amount, is_arrived, note
 	FROM out_transactions
 	WHERE "from" = ?
-		OR "to" = ?;
+		OR "to" = ?
+	ORDER BY id DESC;
 
 -- GetAllOutTransactions
 SELECT id, "from", "to", purpose, amount, is_arrived, note
-	FROM out_transactions;
+	FROM out_transactions
+	ORDER BY id DESC;
 
 -- GetOutTransaction
 SELECT id, "from", "to", purpose, amount, is_arrived, note

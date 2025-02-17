@@ -18,7 +18,7 @@ type InTransactionData struct {
 }
 
 func inTransactionsGet(ctx *middleware.Ctx) {
-	tmpl := getTemplate(ctx, "in_transactions")
+	tmpl := getTemplates(ctx, "ins", "in_row")
 	if tmpl == nil {
 		return
 	}
@@ -37,7 +37,7 @@ func inTransactionsGet(ctx *middleware.Ctx) {
 }
 
 func inTransactionGet(ctx *middleware.Ctx) {
-	tmpl := getTemplate(ctx, "in_transaction")
+	tmpl := getTemplate(ctx, "in")
 	if tmpl == nil {
 		return
 	}
@@ -56,8 +56,41 @@ func inTransactionGet(ctx *middleware.Ctx) {
 	executeTemplate(ctx, tmpl, data)
 }
 
+func inTransactionPost(ctx *middleware.Ctx) {
+	tmpl := getSingleTemplate(ctx, "in_row")
+	if tmpl == nil {
+		return
+	}
+
+	amountStr := ctx.FormValue("amount")
+
+	amount, err := strconv.ParseFloat(amountStr, 32)
+	if err != nil {
+		ctx.InternalError(err)
+		return
+	}
+
+	t := db.Transaction{
+		From:      ctx.FormValue("from"),
+		To:        ctx.FormValue("to"),
+		Amount:    float32(amount),
+		IsArrived: ctx.FormValue("is_arrived") == "1",
+		Note:      ctx.FormValue("note"),
+	}
+
+	log.Noticef("Creating In Transaction: %+v", t)
+
+	err = db.InsertInTransaction(&t)
+	if err != nil {
+		ctx.InternalError(err)
+		return
+	}
+
+	executeSingleTemplate(ctx, tmpl, "row", t)
+}
+
 func inTransactionPut(ctx *middleware.Ctx) {
-	tmpl := getSingleTemplate(ctx, "in_transaction")
+	tmpl := getSingleTemplate(ctx, "in")
 	if tmpl == nil {
 		return
 	}
@@ -98,5 +131,5 @@ func inTransactionPut(ctx *middleware.Ctx) {
 		Data:        Data{User: ctx.User},
 		Transaction: t,
 	}
-	executeSingleTemplate(ctx, tmpl, data)
+	executeSingleTemplate(ctx, tmpl, "content", data)
 }

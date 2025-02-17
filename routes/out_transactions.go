@@ -13,7 +13,7 @@ type OutTransactionData struct {
 }
 
 func outTransactionsGet(ctx *middleware.Ctx) {
-	tmpl := getTemplate(ctx, "out_transactions")
+	tmpl := getTemplates(ctx, "outs", "out_row")
 	if tmpl == nil {
 		return
 	}
@@ -32,7 +32,7 @@ func outTransactionsGet(ctx *middleware.Ctx) {
 }
 
 func outTransactionGet(ctx *middleware.Ctx) {
-	tmpl := getTemplate(ctx, "out_transaction")
+	tmpl := getTemplate(ctx, "out")
 	if tmpl == nil {
 		return
 	}
@@ -51,8 +51,42 @@ func outTransactionGet(ctx *middleware.Ctx) {
 	executeTemplate(ctx, tmpl, data)
 }
 
+func outTransactionPost(ctx *middleware.Ctx) {
+	tmpl := getSingleTemplate(ctx, "out_row")
+	if tmpl == nil {
+		return
+	}
+
+	amountStr := ctx.FormValue("amount")
+
+	amount, err := strconv.ParseFloat(amountStr, 32)
+	if err != nil {
+		ctx.InternalError(err)
+		return
+	}
+
+	t := db.Transaction{
+		From:      ctx.FormValue("from"),
+		To:        ctx.FormValue("to"),
+		Purpose:   ctx.FormValue("purpose"),
+		Amount:    float32(amount),
+		IsArrived: ctx.FormValue("is_arrived") == "1",
+		Note:      ctx.FormValue("note"),
+	}
+
+	log.Noticef("Creating Out Transaction: %+v", t)
+
+	err = db.InsertOutTransaction(&t)
+	if err != nil {
+		ctx.InternalError(err)
+		return
+	}
+
+	executeSingleTemplate(ctx, tmpl, "row", t)
+}
+
 func outTransactionPut(ctx *middleware.Ctx) {
-	tmpl := getSingleTemplate(ctx, "out_transaction")
+	tmpl := getSingleTemplate(ctx, "out")
 	if tmpl == nil {
 		return
 	}
@@ -94,5 +128,5 @@ func outTransactionPut(ctx *middleware.Ctx) {
 		Data:        Data{User: ctx.User},
 		Transaction: t,
 	}
-	executeSingleTemplate(ctx, tmpl, data)
+	executeSingleTemplate(ctx, tmpl, "content", data)
 }

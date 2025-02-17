@@ -24,7 +24,9 @@ func StartRouting(key []byte) {
 	middleware.AuthHandleFunc("GET /out", outTransactionsGet)
 	middleware.AuthHandleFunc("GET /out/{id}", outTransactionGet)
 
+	middleware.EditorHandleFunc("POST /in", inTransactionPost)
 	middleware.EditorHandleFunc("PUT /in/{id}", inTransactionPut)
+	middleware.EditorHandleFunc("POST /out", outTransactionPost)
 	middleware.EditorHandleFunc("PUT /out/{id}", outTransactionPut)
 
 	log.Notice("Serving on :8000")
