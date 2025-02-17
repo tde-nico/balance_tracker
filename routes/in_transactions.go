@@ -46,7 +46,9 @@ func inTransactionGet(ctx *middleware.Ctx) {
 	id := ctx.PathValue("id")
 	inTransaction, err := db.GetInTransaction(id)
 	if err != nil {
-		ctx.InternalError(err)
+		log.Errorf("Error getting in transaction %s: %v", id, err)
+		ctx.AddFlash("404 Page not found")
+		ctx.Redirect("/in", http.StatusSeeOther)
 		return
 	}
 

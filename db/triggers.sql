@@ -7,6 +7,14 @@ CREATE TRIGGER IF NOT EXISTS update_balance_on_in_transaction
 AFTER INSERT ON in_transactions
 FOR EACH ROW
 BEGIN
+  INSERT INTO players (username, balance, fake_balance, item_count)
+    SELECT NEW."to", 0, 0, 0
+    WHERE NOT EXISTS (
+      SELECT 1
+        FROM players
+        WHERE username = NEW."to"
+          OR NEW."to" == '');
+  
   UPDATE players
     SET balance = balance + NEW.amount
     WHERE NEW.is_arrived = 1
@@ -45,12 +53,40 @@ BEGIN
     SET item_count = item_count - 1
     WHERE username = OLD."to"
       AND OLD.note IS NOT NULL;
+  
+  DELETE FROM players
+    WHERE username = OLD."to"
+    AND NOT EXISTS (
+      SELECT 1
+        FROM in_transactions
+        WHERE "to" = OLD."to")
+    AND NOT EXISTS (
+      SELECT 1
+        FROM out_transactions
+        WHERE "from" = OLD."to"
+          OR "to" = OLD."to");
 END;
 
 CREATE TRIGGER update_balance_on_out_transaction
 AFTER INSERT ON out_transactions
 FOR EACH ROW
 BEGIN
+  INSERT INTO players (username, balance, fake_balance, item_count)
+    SELECT NEW."from", 0, 0, 0
+    WHERE NOT EXISTS (
+      SELECT 1
+        FROM players
+        WHERE username = NEW."from"
+          OR NEW."from" == '');
+  
+  INSERT INTO players (username, balance, fake_balance, item_count)
+    SELECT NEW."to", 0, 0, 0
+    WHERE NOT EXISTS (
+      SELECT 1
+        FROM players
+        WHERE username = NEW."to"
+          OR NEW."to" == '');
+
   UPDATE players
     SET balance = balance - NEW.amount
     WHERE NEW.is_arrived = 1
@@ -87,4 +123,28 @@ BEGIN
     SET fake_balance = fake_balance + OLD.amount
     WHERE OLD.is_arrived = 0
       AND username = OLD."to";
+
+  DELETE FROM players
+    WHERE username = OLD."from"
+    AND NOT EXISTS (
+      SELECT 1
+        FROM in_transactions
+        WHERE "to" = OLD."from")
+    AND NOT EXISTS (
+      SELECT 1
+        FROM out_transactions
+        WHERE "from" = OLD."from"
+          OR "to" = OLD."from");
+  
+  DELETE FROM players
+    WHERE username = OLD."to"
+    AND NOT EXISTS (
+      SELECT 1
+        FROM in_transactions
+        WHERE "to" = OLD."to")
+    AND NOT EXISTS (
+      SELECT 1
+        FROM out_transactions
+        WHERE "from" = OLD."to"
+          OR "to" = OLD."to");
 END;

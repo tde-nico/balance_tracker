@@ -41,7 +41,9 @@ func outTransactionGet(ctx *middleware.Ctx) {
 	id := ctx.PathValue("id")
 	inTransaction, err := db.GetOutTransaction(id)
 	if err != nil {
-		ctx.InternalError(err)
+		log.Errorf("Error getting out transaction %s: %v", id, err)
+		ctx.AddFlash("404 Page not found")
+		ctx.Redirect("/out", http.StatusSeeOther)
 		return
 	}
 
