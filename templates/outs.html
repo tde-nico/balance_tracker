@@ -3,28 +3,30 @@
   <div class="max-w-5xl p-6 w-full">
     <h1 class="text-3xl font-bold text-center mb-6">Out Transactions</h1>
 
-    <form hx-post="/out" hx-target="#transactions-body" hx-swap="afterbegin"
-      class="mb-6 p-4 bg-zinc-900 rounded-lg shadow-lg flex flex-wrap gap-4 items-center">
-      <input type="text" name="from" placeholder="From" required
-        class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
-      <input type="text" name="to" placeholder="To" required
-        class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
-      <input type="text" name="purpose" placeholder="Purpose" required
-        class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
-      <input type="number" name="amount" placeholder="Amount" required
-        class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
-      <select name="is_arrived"
-        class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500">
-        <option value="0">⏳ Pending</option>
-        <option value="1">✔ Arrived</option>
-      </select>
-      <input type="text" name="note" placeholder="Note (optional)"
-        class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
-      <button type="submit"
-        class="p-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-        Add Transaction
-      </button>
-    </form>
+    {{ if .User.IsEditor }}
+      <form hx-post="/out" hx-target="#transactions-body" hx-swap="afterbegin"
+        class="mb-6 p-4 bg-zinc-900 rounded-lg shadow-lg flex flex-wrap gap-4 items-center">
+        <input type="text" name="from" placeholder="From" required
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
+        <input type="text" name="to" placeholder="To" required
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
+        <input type="text" name="purpose" placeholder="Purpose" required
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
+        <input type="number" name="amount" placeholder="Amount" required
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
+        <select name="is_arrived"
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500">
+          <option value="0">⏳ Pending</option>
+          <option value="1">✔ Arrived</option>
+        </select>
+        <input type="text" name="note" placeholder="Note (optional)"
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
+        <button type="submit"
+          class="p-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+          Add Transaction
+        </button>
+      </form>
+    {{ end }}
     
     <div class="overflow-x-auto">
       <table class="w-full border-collapse border border-zinc-700 rounded-lg">

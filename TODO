@@ -1,4 +1,4 @@
-form per aggiungere transazioni in/out
+fix /in/100 (se il numero non esiste)
 validazione username in update transactions / fare menu a tendina
 crea automatico / manuale players
 possibilità di sortare le colonne nelle varie tabelle (es: https://www.raymondcamden.com/2022/05/02/building-table-sorting-and-pagination-in-alpinejs)

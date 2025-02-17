@@ -4,6 +4,7 @@ import (
 	"balance/db"
 	"balance/log"
 	"balance/middleware"
+	"net/http"
 	"strconv"
 )
 
@@ -90,11 +91,6 @@ func inTransactionPost(ctx *middleware.Ctx) {
 }
 
 func inTransactionPut(ctx *middleware.Ctx) {
-	tmpl := getSingleTemplate(ctx, "in")
-	if tmpl == nil {
-		return
-	}
-
 	idStr := ctx.PathValue("id")
 	amountStr := ctx.FormValue("amount")
 
@@ -127,9 +123,24 @@ func inTransactionPut(ctx *middleware.Ctx) {
 		return
 	}
 
-	data := &InTransactionData{
-		Data:        Data{User: ctx.User},
-		Transaction: t,
+	ctx.WriteHeader(http.StatusNoContent)
+}
+
+func inTransactionDelete(ctx *middleware.Ctx) {
+	idStr := ctx.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		ctx.InternalError(err)
+		return
 	}
-	executeSingleTemplate(ctx, tmpl, "content", data)
+
+	log.Warningf("Deleting In Transaction: %d", id)
+
+	err = db.DeleteInTransaction(id)
+	if err != nil {
+		ctx.InternalError(err)
+		return
+	}
+
+	ctx.WriteHeader(http.StatusNoContent)
 }

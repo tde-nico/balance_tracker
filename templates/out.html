@@ -1,14 +1,34 @@
 {{ define "content" }}
-<div id="content" class="flex items-center justify-center min-h-[80vh] bg-zinc-800 text-zinc-300 py-6">
-  <div class="max-w-3xl w-full p-6 bg-zinc-900 rounded-lg shadow-lg">
+<div
+  id="content"
+  x-data="{
+    showNotification: false,
+    confirmDelete() {
+      if (confirm('Are you sure you want to delete this transaction?')) {
+        $refs.deleteButton.click();
+      }
+    }
+  }"
+  x-on:notify.window="showNotification = true; setTimeout(() => showNotification = false, 3000);"
+  class="relative flex items-center justify-center min-h-[80vh] bg-zinc-800 text-zinc-300 py-4"
+>
+  <div class="max-w-3xl w-full py-3 px-6 bg-zinc-900 rounded-lg shadow-lg">
     <h1 class="text-3xl font-bold text-center mb-6">Transaction Details</h1>
    
+    <div
+      x-show="showNotification"
+      x-transition
+      x-cloak
+      class="absolute top-5 right-5 bg-green-600 text-white px-4 py-2 rounded-lg shadow-md"
+    >
+      ✅ Transaction Updated Successfully!
+    </div>
+
     <form
       {{ if .User.IsEditor }}
         hx-put="/out/{{ .Transaction.ID }}"
         hx-trigger="submit"
-        hx-target="#content"
-        hx-swap="outerHTML"
+        hx-on::after-request="window.dispatchEvent(new Event('notify'))"
       {{ end }}
     >
       <input type="hidden" name="id" value="{{ .Transaction.ID }}">
@@ -70,11 +90,25 @@
       {{ end }}
 
       {{ if .User.IsEditor }}
-        <div class="mt-6 flex justify-end">
-          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
-            Save Changes
-          </button>
-        </div>
+      <div class="mt-6 flex justify-between">
+        <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
+          Save Changes
+        </button>
+
+        <button
+          type="button"
+          class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500"
+          @click="confirmDelete()">
+          Delete
+        </button>
+
+        <button
+          x-ref="deleteButton"
+          hx-delete="/out/{{ .Transaction.ID }}"
+          hx-on::after-request="window.location.href='/out'"
+          class="hidden">
+        </button>
+      </div>
       {{ end }}
 
     </form>
