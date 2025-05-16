@@ -2,5 +2,6 @@
 
 balance
 *.db
+*.bak
 init.py
 setup.sh
