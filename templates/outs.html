@@ -6,7 +6,7 @@
     {{ if .User.IsEditor }}
       <form hx-post="/out" hx-target="#transactions-body" hx-swap="afterbegin"
         class="mb-6 p-4 bg-zinc-900 rounded-lg shadow-lg flex flex-wrap gap-4 items-center">
-        <input type="text" name="from" placeholder="From" required
+        <input type="text" name="from" placeholder="From"
           class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
         <input type="text" name="to" placeholder="To" required
           class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
