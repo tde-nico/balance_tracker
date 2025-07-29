@@ -1,6 +1,9 @@
 package db
 
-import "fmt"
+import (
+	"balance/crypto_utils"
+	"fmt"
+)
 
 type NotedTransaction struct {
 	Note   string
@@ -28,7 +31,7 @@ func GetTotalBalance() (float32, float32, error) {
 	if err != nil {
 		return 0, 0, fmt.Errorf("error scanning balance: %v", err)
 	}
-	return balance, fakeBalance, nil
+	return crypto_utils.RoundToTwoDecimals(balance), crypto_utils.RoundToTwoDecimals(fakeBalance), nil
 }
 
 func GetNotedTransactions() ([]NotedTransaction, error) {

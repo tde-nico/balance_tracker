@@ -1,6 +1,7 @@
 package db
 
 import (
+	"balance/crypto_utils"
 	"database/sql"
 	"fmt"
 )
@@ -28,6 +29,7 @@ func GetInTransactions(username string) ([]Transaction, error) {
 		if note.Valid {
 			t.Note = note.String
 		}
+		t.Amount = crypto_utils.RoundToTwoDecimals(t.Amount)
 		transactions = append(transactions, t)
 	}
 	return transactions, nil
@@ -56,6 +58,7 @@ func GetAllInTransactions() ([]Transaction, error) {
 		if note.Valid {
 			t.Note = note.String
 		}
+		t.Amount = crypto_utils.RoundToTwoDecimals(t.Amount)
 		transactions = append(transactions, t)
 	}
 	return transactions, nil
@@ -76,6 +79,7 @@ func GetInTransaction(id string) (Transaction, error) {
 	if note.Valid {
 		t.Note = note.String
 	}
+	t.Amount = crypto_utils.RoundToTwoDecimals(t.Amount)
 	return t, nil
 }
 
@@ -175,6 +179,7 @@ func GetOutTransactions(username string) ([]Transaction, error) {
 		if note.Valid {
 			t.Note = note.String
 		}
+		t.Amount = crypto_utils.RoundToTwoDecimals(t.Amount)
 		transactions = append(transactions, t)
 	}
 	return transactions, nil
@@ -203,6 +208,7 @@ func GetAllOutTransactions() ([]Transaction, error) {
 		if note.Valid {
 			t.Note = note.String
 		}
+		t.Amount = crypto_utils.RoundToTwoDecimals(t.Amount)
 		transactions = append(transactions, t)
 	}
 	return transactions, nil
@@ -223,6 +229,7 @@ func GetOutTransaction(id string) (Transaction, error) {
 	if note.Valid {
 		t.Note = note.String
 	}
+	t.Amount = crypto_utils.RoundToTwoDecimals(t.Amount)
 	return t, nil
 }
 

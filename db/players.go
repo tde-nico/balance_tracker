@@ -1,6 +1,9 @@
 package db
 
-import "fmt"
+import (
+	"balance/crypto_utils"
+	"fmt"
+)
 
 func GetPlayers() ([]Player, error) {
 	query, err := GetStatement("GetPlayers")
@@ -18,6 +21,8 @@ func GetPlayers() ([]Player, error) {
 	for rows.Next() {
 		var p Player
 		err = rows.Scan(&p.Username, &p.Balance, &p.FakeBalance, &p.ItemCount)
+		p.Balance = crypto_utils.RoundToTwoDecimals(p.Balance)
+		p.FakeBalance = crypto_utils.RoundToTwoDecimals(p.FakeBalance)
 		if err != nil {
 			return nil, fmt.Errorf("error scanning players: %v", err)
 		}
@@ -37,5 +42,7 @@ func GetPlayer(username string) (*Player, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error scanning player: %v", err)
 	}
+	p.Balance = crypto_utils.RoundToTwoDecimals(p.Balance)
+	p.FakeBalance = crypto_utils.RoundToTwoDecimals(p.FakeBalance)
 	return &p, nil
 }

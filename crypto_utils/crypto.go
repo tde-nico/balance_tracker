@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"math"
 
 	"golang.org/x/crypto/pbkdf2"
 )
@@ -40,4 +41,8 @@ func GetRand(size int) ([]byte, string, error) {
 func HashPassword(password string, salt []byte) string {
 	secret := pbkdf2.Key([]byte(password), salt, 10000, 32, sha256.New)
 	return BytesToHex(secret)
+}
+
+func RoundToTwoDecimals(val float32) float32 {
+	return float32(math.Round(float64(val)*100) / 100)
 }
