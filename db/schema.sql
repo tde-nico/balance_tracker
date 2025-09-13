@@ -34,6 +34,18 @@ CREATE TABLE IF NOT EXISTS "out_transactions" (
 	FOREIGN KEY("to") REFERENCES "players"("username")
 );
 
+CREATE TABLE IF NOT EXISTS "peer_transactions" (
+	"id" INTEGER NOT NULL,
+	"from" VARCHAR(32) NOT NULL,
+	"to" VARCHAR(32) NOT NULL,
+	"amount" REAL NOT NULL,
+	"is_arrived" BOOLEAN NOT NULL DEFAULT 0,
+	"note" TEXT,
+	PRIMARY KEY("id"),
+	FOREIGN KEY("from") REFERENCES "players"("username"),
+	FOREIGN KEY("to") REFERENCES "players"("username")
+);
+
 CREATE TABLE IF NOT EXISTS "in_transactions" (
 	"id" INTEGER NOT NULL,
 	"from" VARCHAR(255) NOT NULL,

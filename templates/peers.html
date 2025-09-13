@@ -1,0 +1,50 @@
+{{ define "content" }}
+<div class="flex items-center justify-center min-h-[80vh] bg-zinc-800 text-zinc-300">
+  <div class="max-w-5xl p-6 w-full">
+    <h1 class="text-3xl font-bold text-center mb-6">Peer Transactions</h1>
+
+    {{ if .User.IsEditor }}
+      <form hx-post="/peer" hx-target="#transactions-body" hx-swap="afterbegin"
+        class="mb-6 p-4 bg-zinc-900 rounded-lg shadow-lg flex flex-wrap gap-4 items-center">
+        <input type="text" name="from" placeholder="From" required
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
+        <input type="text" name="to" placeholder="To" required
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
+        <input type="number" step="0.01" name="amount" placeholder="Amount" required
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
+        <select name="is_arrived"
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500">
+          <option value="0">⏳ Pending</option>
+          <option value="1">✔ Arrived</option>
+        </select>
+        <input type="text" name="note" placeholder="Note (optional)"
+          class="p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:outline-none focus:ring focus:ring-blue-500" />
+        <button type="submit"
+          class="p-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+          Add Transaction
+        </button>
+      </form>
+    {{ end }}
+
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse border border-zinc-700 rounded-lg">
+        <thead>
+          <tr class="bg-zinc-950 text-left text-gray-300">
+            <th class="p-4 border-b border-zinc-700">From</th>
+            <th class="p-4 border-b border-zinc-700">To</th>
+            <th class="p-4 border-b border-zinc-700 text-right">Amount</th>
+            <th class="p-4 border-b border-zinc-700 text-right">Status</th>
+            <th class="p-4 border-b border-zinc-700">Note</th>
+          </tr>
+        </thead>
+        <tbody id="transactions-body">
+          {{ range .PeerTransactions }}
+            {{ template "row" . }}
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{{ end }}

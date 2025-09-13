@@ -9,9 +9,10 @@ import (
 
 type UserData struct {
 	Data
-	Player          *db.Player
-	InTransactions  []db.Transaction
-	OutTransactions []db.Transaction
+	Player           *db.Player
+	InTransactions   []db.Transaction
+	PeerTransactions []db.Transaction
+	OutTransactions  []db.Transaction
 }
 
 func userInfo(ctx *middleware.Ctx) {
@@ -36,6 +37,12 @@ func userInfo(ctx *middleware.Ctx) {
 		return
 	}
 
+	peerTransactions, err := db.GetPeerTransactions(player.Username)
+	if err != nil {
+		ctx.InternalError(err)
+		return
+	}
+
 	outTransactions, err := db.GetOutTransactions(player.Username)
 	if err != nil {
 		ctx.InternalError(err)
@@ -43,10 +50,11 @@ func userInfo(ctx *middleware.Ctx) {
 	}
 
 	data := &UserData{
-		Data:            Data{User: ctx.User},
-		Player:          player,
-		InTransactions:  inTransactions,
-		OutTransactions: outTransactions,
+		Data:             Data{User: ctx.User},
+		Player:           player,
+		InTransactions:   inTransactions,
+		PeerTransactions: peerTransactions,
+		OutTransactions:  outTransactions,
 	}
 	executeTemplate(ctx, tmpl, data)
 }

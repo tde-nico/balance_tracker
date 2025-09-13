@@ -52,6 +52,44 @@
       </div>
     {{ end }}
 
+    {{ if .PeerTransactions }}
+      <h2 class="text-xl font-semibold mb-3 text-white-400">Peer Transactions</h2>
+      <div class="overflow-x-auto">
+        <table class="border-collapse border border-zinc-700 w-full rounded-lg">
+          <thead>
+            <tr class="bg-zinc-950 text-left text-gray-300">
+              <th class="p-4 border-b border-zinc-700">From</th>
+              <th class="p-4 border-b border-zinc-700 text-right">Amount</th>
+              <th class="p-4 border-b border-zinc-700 text-right">Status</th>
+              <th class="p-4 border-b border-zinc-700">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ range .PeerTransactions }}
+            <tr
+              x-data="{ url: '/peer/{{ .ID }}' }"
+              @click="window.location = url"
+              class="bg-zinc-900 hover:bg-zinc-700 transition-colors"
+            >
+              <td class="p-4 border-b border-zinc-700 text-white">
+                {{ .From }}
+              </td>
+              <td class="p-4 border-b border-zinc-700 text-right text-{{ if gt .Amount 0.0 }}green{{ else }}red{{ end }}-500">
+                {{ .Amount }}
+              </td>
+              <td class="p-4 border-b border-zinc-700 text-right">
+                <span class="px-2 py-1 text-sm rounded-lg whitespace-nowrap {{ if .IsArrived }}bg-green-500 text-black{{ else }}bg-red-500{{ end }}">
+                  {{ if .IsArrived }}✔ Arrived{{ else }}⏳ Pending{{ end }}
+                </span>
+              </td>
+              <td class="p-4 border-b border-zinc-700">{{ .Note }}</td>
+            </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </div>
+    {{ end }}
+
     {{ if .InTransactions }}
       <h2 class="text-xl font-semibold mb-3 text-green-400">Incoming Transactions</h2>
       <div class="overflow-x-auto">

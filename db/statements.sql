@@ -102,3 +102,32 @@ INSERT INTO out_transactions (id, "from", "to", purpose, amount, is_arrived, not
 -- DeleteOutTransaction
 DELETE FROM out_transactions
 	WHERE id = ?;
+
+-- GetPeerTransactions
+SELECT id, "from", "to", amount, is_arrived, note
+	FROM peer_transactions
+	WHERE "from" = ?
+		OR "to" = ?
+	ORDER BY id DESC;
+
+-- GetAllPeerTransactions
+SELECT id, "from", "to", amount, is_arrived, note
+	FROM peer_transactions
+	ORDER BY id DESC;
+
+-- GetPeerTransaction
+SELECT id, "from", "to", amount, is_arrived, note
+	FROM peer_transactions
+	WHERE id = ?;
+
+-- InsertPeerTransaction
+INSERT INTO peer_transactions ("from", "to", amount, is_arrived, note)
+	VALUES (?, ?, ?, ?, ?);
+
+-- InsertPeerTransactionWithID
+INSERT INTO peer_transactions (id, "from", "to", amount, is_arrived, note)
+	VALUES (?, ?, ?, ?, ?, ?);
+
+-- DeletePeerTransaction
+DELETE FROM peer_transactions
+	WHERE id = ?;

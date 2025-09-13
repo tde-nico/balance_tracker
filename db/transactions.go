@@ -305,3 +305,153 @@ func UpdateOutTransaction(t Transaction) error {
 	}
 	return nil
 }
+
+func GetPeerTransactions(username string) ([]Transaction, error) {
+	query, err := GetStatement("GetPeerTransactions")
+	if err != nil {
+		return nil, fmt.Errorf("error getting statement: %v", err)
+	}
+
+	rows, err := query.Query(username, username)
+	if err != nil {
+		return nil, fmt.Errorf("error querying transactions: %v", err)
+	}
+	defer rows.Close()
+
+	var transactions []Transaction
+	for rows.Next() {
+		var t Transaction
+		var note sql.NullString
+		err = rows.Scan(&t.ID, &t.From, &t.To, &t.Amount, &t.IsArrived, &note)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning transactions: %v", err)
+		}
+		if note.Valid {
+			t.Note = note.String
+		}
+		t.Amount = crypto_utils.RoundToTwoDecimals(t.Amount)
+		transactions = append(transactions, t)
+	}
+	return transactions, nil
+}
+
+func GetAllPeerTransactions() ([]Transaction, error) {
+	query, err := GetStatement("GetAllPeerTransactions")
+	if err != nil {
+		return nil, fmt.Errorf("error getting statement: %v", err)
+	}
+
+	rows, err := query.Query()
+	if err != nil {
+		return nil, fmt.Errorf("error querying transactions: %v", err)
+	}
+	defer rows.Close()
+
+	var transactions []Transaction
+	for rows.Next() {
+		var t Transaction
+		var note sql.NullString
+		err = rows.Scan(&t.ID, &t.From, &t.To, &t.Amount, &t.IsArrived, &note)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning transactions: %v", err)
+		}
+		if note.Valid {
+			t.Note = note.String
+		}
+		t.Amount = crypto_utils.RoundToTwoDecimals(t.Amount)
+		transactions = append(transactions, t)
+	}
+	return transactions, nil
+}
+
+func GetPeerTransaction(id string) (Transaction, error) {
+	query, err := GetStatement("GetPeerTransaction")
+	if err != nil {
+		return Transaction{}, fmt.Errorf("error getting statement: %v", err)
+	}
+
+	var t Transaction
+	var note sql.NullString
+	err = query.QueryRow(id).Scan(&t.ID, &t.From, &t.To, &t.Amount, &t.IsArrived, &note)
+	if err != nil {
+		return Transaction{}, fmt.Errorf("error scanning transaction: %v", err)
+	}
+	if note.Valid {
+		t.Note = note.String
+	}
+	t.Amount = crypto_utils.RoundToTwoDecimals(t.Amount)
+	return t, nil
+}
+
+func InsertPeerTransaction(t *Transaction) error {
+	query, err := GetStatement("InsertPeerTransaction")
+	if err != nil {
+		return fmt.Errorf("error getting statement: %v", err)
+	}
+
+	var note sql.NullString
+	if t.Note == "" {
+		note = sql.NullString{Valid: false}
+	} else {
+		note = sql.NullString{String: t.Note, Valid: true}
+	}
+
+	res, err := query.Exec(t.From, t.To, t.Amount, t.IsArrived, note)
+	if err != nil {
+		return fmt.Errorf("error inserting transaction: %v", err)
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return fmt.Errorf("error getting last insert id: %v", err)
+	}
+	t.ID = int(id)
+
+	return nil
+}
+
+func InsertPeerTransactionWithID(t Transaction) error {
+	query, err := GetStatement("InsertPeerTransactionWithID")
+	if err != nil {
+		return fmt.Errorf("error getting statement: %v", err)
+	}
+
+	var note sql.NullString
+	if t.Note == "" {
+		note = sql.NullString{Valid: false}
+	} else {
+		note = sql.NullString{String: t.Note, Valid: true}
+	}
+
+	_, err = query.Exec(t.ID, t.From, t.To, t.Amount, t.IsArrived, note)
+	if err != nil {
+		return fmt.Errorf("error inserting transaction: %v", err)
+	}
+	return nil
+}
+
+func DeletePeerTransaction(id int) error {
+	query, err := GetStatement("DeletePeerTransaction")
+	if err != nil {
+		return fmt.Errorf("error getting statement: %v", err)
+	}
+
+	_, err = query.Exec(id)
+	if err != nil {
+		return fmt.Errorf("error deleting transaction: %v", err)
+	}
+	return nil
+}
+
+func UpdatePeerTransaction(t Transaction) error {
+	err := DeletePeerTransaction(t.ID)
+	if err != nil {
+		return fmt.Errorf("error updating transaction: %v", err)
+	}
+
+	err = InsertPeerTransactionWithID(t)
+	if err != nil {
+		return fmt.Errorf("error updating transaction: %v", err)
+	}
+	return nil
+}
